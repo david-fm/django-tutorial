@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>{{question}}</title>
+</head>
+<body>
+    <form action = "{% url 'polls:vote' question.id %}" method="post">
+    <!--
+        Action to url polls:vote
+        method POST -> it's a must in general when changing data server
+    -->
+    {% csrf_token %}
+    <!-- 
+        All Post forms must have CSRF token
+        It is a security measure to prevent Cross Site Request Forgeries attacks
+    --> 
+    <fieldset>
+        <legend><h1>{{question.question_text}}</h1></legend>
+        {% if error_message %} <p><strong>{{error_message}}</strong></p> {% endif %}
+        {% for choice in question.choice_set.all %}
+            <input type="radio" name="choice" id="choice{{forloop.counter}}" value ="{{choice.id}}">
+            <!-- 
+                Value is the choice's ID.
+                The name is "choice" -> when somobody submit the form with one
+                    of the choices selected it will send choice = #
+                # will be the ID of the selected choice
+            -->
+            <label for="choice{{forloop.counter}}">{{choice.choice_text}}</label>
+        {% endfor %}
+    </fieldset>
+    <input type="submit" value="Vote">
+    </form>
+</body>
+</html>
